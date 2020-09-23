@@ -41,13 +41,13 @@ install_rlwrap() {
 
   (
     echo "∗ Downloading rlwrap source..."
-    curl --silent --location --create-dirs --output "$source_path" "$download_url" || fail "Could not download rlwrap $version"
+    curl --silent --location --create-dirs --output "$source_path" "$download_url"
     mkdir -p "$distination"
     tar zxf "$source_path" -C "$distination" --strip-components=1
     cd "$distination"
 
     echo "∗ Recreating configure file..."
-    autoreconf --install || fail "Could not recreate configure file"
+    autoreconf --install
 
     echo "∗ Configuring..."
     case "$OSTYPE" in
@@ -55,10 +55,10 @@ install_rlwrap() {
         CPPFLAGS="-I$(brew --prefix readline)/include" \
         CFLAGS="-I$(brew --prefix readline)/include" \
         LDFLAGS="-L$(brew --prefix readline)/lib" \
-          ./configure --prefix="$install_path" || fail "Could not configure"
+          ./configure --prefix="$install_path"
         ;;
       linux*)
-        ./configure --prefix="$install_path" || fail "Could not configure"
+        ./configure --prefix="$install_path"
         ;;
       *)
         fail "Unsupported platform..."
@@ -66,10 +66,10 @@ install_rlwrap() {
     esac
 
     echo "∗ Compiling..."
-    make &>log.make || fail "Could not compile"
+    make &>log.make
 
     echo "∗ Installing..."
-    make install || fail "Could not install"
+    make install
 
     echo "The installation was successful!"
   ) || (
